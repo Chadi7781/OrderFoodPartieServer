@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.example.chadi.androideatitserver.Common.Common;
 import com.example.chadi.androideatitserver.Interface.ItemClickListener;
 import com.example.chadi.androideatitserver.Model.Category;
-import com.example.chadi.androideatitserver.Service.ListenOrder;
+import com.example.chadi.androideatitserver.Model.Token;
 import com.example.chadi.androideatitserver.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -46,7 +47,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
-import java.util.zip.Inflater;
 
 import info.hoang8f.widget.FButton;
 
@@ -123,15 +123,25 @@ public class Home extends AppCompatActivity
 
         loadMenu();
 
-        //Call service
-        Intent service = new Intent(Home.this ,ListenOrder.class);
-        startService(service);
 
+        //Send token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+
+
+    }
+
+    private void updateToken(String token) {
+        FirebaseDatabase db =FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference("Tokens");
+
+        Token data = new Token(token ,true);//false because this token send from client app
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Add new Category");
+        alertDialog.setTitle(" Add new Category");
         alertDialog.setMessage("Please fill full information");
         LayoutInflater inflater = this.getLayoutInflater();
         View add_menu_layout = inflater.inflate(R.layout.add_new_menu_layout,null);

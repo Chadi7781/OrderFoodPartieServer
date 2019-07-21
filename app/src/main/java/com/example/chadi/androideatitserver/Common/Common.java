@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 
 import com.example.chadi.androideatitserver.Model.Request;
 import com.example.chadi.androideatitserver.Model.User;
+import com.example.chadi.androideatitserver.Remote.APIService;
 import com.example.chadi.androideatitserver.Remote.IGeoCoordinates;
 import com.example.chadi.androideatitserver.Remote.RetrofitClient;
 
@@ -27,6 +28,7 @@ public class Common {
 
     public static final String baseUrl ="https://maps.googleapis.com";
 
+    private static final String fcmUrl = "https://fcm.googleapis.com/";
 
 
 
@@ -45,6 +47,9 @@ public class Common {
 
     public static IGeoCoordinates getGeoCoordinatesService(){
         return RetrofitClient.getClient(baseUrl).create(IGeoCoordinates.class);
+    }
+    public static APIService getFCMClient(){
+        return RetrofitClient.getClient(fcmUrl).create(APIService.class);
     }
 
     public static Bitmap scaleBitmap(Bitmap bitmap ,int newWidth , int newHeight){
